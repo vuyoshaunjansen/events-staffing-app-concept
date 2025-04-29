@@ -1,0 +1,1519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShiftLink - Concept V3</title>
+    <style>
+        /* --- Global Styles & Modern/Uber-Inspired Palette --- */
+        :root {
+            --bg-main: #F8F9FA; /* Very light grey background */
+            --bg-container: #FFFFFF; /* White containers */
+            --text-primary: #212529; /* Dark primary text */
+            --text-secondary: #6C757D; /* Grey secondary text */
+            --accent-primary: #20C997; /* Vibrant Teal/Green */
+            --accent-primary-darker: #1BAA84;
+            --accent-secondary: #007BFF; /* Optional Blue for specific actions */
+            --border-light: #E9ECEF; /* Light border color */
+            --shadow-soft: rgba(0, 0, 0, 0.07);
+            --danger-color: #DC3545; /* Red for decline/errors */
+            --danger-color-hover: #C82333;
+            --success-color: var(--accent-primary);
+            --success-color-hover: var(--accent-primary-darker);
+            --warning-color: #FFC107;
+            --info-color: #17A2B8;
+
+            /* Status Backgrounds */
+            --status-accepted-bg: #e9f9f4;
+            --status-declined-bg: #fdecea;
+            --status-sent-bg: #e3f2fd;
+
+            /* Card */
+             --card-bg: var(--bg-container);
+             --card-border: var(--border-light);
+         }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-size: 16px; /* Base font size */
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 30px;
+            background-color: var(--bg-container);
+            border-radius: 16px; /* Softer radius */
+            box-shadow: 0 6px 20px var(--shadow-soft);
+            overflow: hidden; /* Contain floats */
+        }
+
+        h1, h2, h3, h4 {
+            margin-bottom: 0.8em;
+            font-weight: 600; /* Slightly bolder headings */
+        }
+
+        h1 { font-size: 2.1rem; color: var(--text-primary); }
+        h2 { font-size: 1.7rem; color: var(--text-secondary); margin-top: 1.8em; border-bottom: 1px solid var(--border-light); padding-bottom: 10px;}
+        h3 { font-size: 1.25rem; color: var(--text-primary); margin-top: 0; }
+        h4 { font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 0.5em; }
+
+        p { margin-bottom: 1em; color: var(--text-secondary); }
+        span.label { font-weight: 600; color: var(--text-primary); margin-right: 6px; }
+        span.detail { color: var(--text-secondary); }
+        span.distance { font-style: italic; color: var(--text-secondary); font-size: 0.9em; }
+        span.pay-rate { font-weight: 700; color: var(--accent-primary); font-size: 1.1em; }
+
+        button, select {
+            padding: 10px 20px;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            margin: 5px;
+            vertical-align: middle; /* Align buttons and selects */
+        }
+        select {
+            border: 1px solid var(--border-light);
+            background-color: var(--bg-container);
+            min-width: 150px; /* Give select some space */
+        }
+
+        button:active { transform: scale(0.98); }
+
+        .btn { /* Base button class */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .btn:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+
+        .btn-primary {
+            background-color: var(--accent-primary);
+            color: white;
+            border-color: var(--accent-primary);
+        }
+        .btn-primary:hover { background-color: var(--accent-primary-darker); border-color: var(--accent-primary-darker); }
+
+        .btn-secondary {
+            background-color: var(--text-secondary);
+            color: white;
+            border-color: var(--text-secondary);
+        }
+        .btn-secondary:hover { background-color: #5A6268; border-color: #5A6268;}
+
+        .btn-accept {
+            background-color: var(--success-color);
+            color: white;
+            border-color: var(--success-color);
+        }
+        .btn-accept:hover { background-color: var(--success-color-hover); border-color: var(--success-color-hover); }
+
+        .btn-decline {
+            background-color: var(--danger-color);
+            color: white;
+            border-color: var(--danger-color);
+        }
+        .btn-decline:hover { background-color: var(--danger-color-hover); border-color: var(--danger-color-hover); }
+
+         .btn-danger { /* Specific class for danger actions like No Show */
+             background-color: var(--danger-color);
+             color: white;
+             border-color: var(--danger-color);
+         }
+         .btn-danger:hover { background-color: var(--danger-color-hover); border-color: var(--danger-color-hover); }
+
+         .btn-success { /* Specific class for success confirmation like Attended */
+             background-color: var(--success-color);
+             color: white;
+             border-color: var(--success-color);
+         }
+         .btn-success:hover { background-color: var(--success-color-hover); border-color: var(--success-color-hover); }
+
+
+        .btn-info {
+            background-color: var(--info-color);
+            color: white;
+            border-color: var(--info-color);
+        }
+        .btn-info:hover { background-color: #138496; border-color: #138496; }
+
+         .btn-warning {
+             background-color: var(--warning-color);
+             color: #212529; /* Dark text on yellow */
+             border-color: var(--warning-color);
+         }
+         .btn-warning:hover { background-color: #E0A800; border-color: #E0A800; }
+
+
+        button:disabled, select:disabled {
+            background-color: #e9ecef;
+            color: #6c757d;
+            cursor: not-allowed;
+            box-shadow: none;
+            border-color: #ced4da;
+            transform: none;
+        }
+
+        /* --- View Management --- */
+        .view { display: none; } /* Hide all views initially */
+        .view.active { display: block; animation: fadeIn 0.5s ease; } /* Show active view */
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* --- Landing Page --- */
+        #landing-page { text-align: center; padding: 80px 20px; }
+        #landing-page h1 { font-size: 3rem; font-weight: 700; margin-bottom: 20px; color: var(--text-primary); }
+        #landing-page p { font-size: 1.2rem; color: var(--text-secondary); margin-bottom: 50px; max-width: 600px; margin-left: auto; margin-right: auto;}
+        #landing-page .options button { padding: 15px 40px; font-size: 1.1rem; margin: 10px 15px; min-width: 250px; font-weight: 600; }
+
+        /* --- Shared View Styles --- */
+        .back-button {
+            margin-bottom: 25px;
+            background-color: var(--bg-main);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-light);
+            float: left;
+            font-weight: 600;
+         }
+         .back-button:hover {
+             background-color: var(--border-light);
+             color: var(--text-primary);
+         }
+         .clearfix::after { content: ""; clear: both; display: table; }
+
+         .dashboard-nav {
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-light);
+            padding-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+         }
+
+        /* --- Item Lists & Cards --- */
+        .item-list {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+            margin-top: 25px;
+        }
+        @media (min-width: 768px) { /* md breakpoint */
+            .item-list { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px; /* Match container radius */
+            padding: 25px;
+            box-shadow: 0 4px 10px var(--shadow-soft);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: flex; /* Use flexbox for layout */
+            flex-direction: column; /* Stack content vertically */
+            position: relative; /* For absolute positioning of status */
+            overflow: hidden; /* Hide overflowing elements */
+        }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
+
+        .card-header { display: flex; align-items: center; margin-bottom: 15px; }
+        .card-header img {
+            width: 60px; height: 60px; border-radius: 50%; margin-right: 15px;
+            object-fit: cover; border: 2px solid var(--border-light);
+        }
+        .card-header h3 { margin-bottom: 0; flex-grow: 1; } /* Allow title to take space */
+
+        .card-body p { margin: 6px 0; font-size: 0.95rem; }
+
+        .card-footer {
+            margin-top: auto; /* Push footer to bottom */
+            padding-top: 20px; /* Space above buttons */
+            text-align: center;
+        }
+        .card-footer .action-buttons {
+            display: flex; justify-content: space-evenly; flex-wrap: wrap;
+        }
+         .card-footer .action-buttons button { margin: 5px; flex-basis: 45%; /* Two buttons per row approx */ }
+
+
+        .status-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent overlay */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0s 0.3s;
+            border-radius: 12px;
+        }
+        .status-overlay.visible { opacity: 1; visibility: visible; transition: opacity 0.3s ease, visibility 0s; }
+        .status-overlay .status-icon { font-size: 3rem; margin-bottom: 15px; }
+        .status-overlay .status-text { font-size: 1.1rem; font-weight: 600; }
+        .status-accepted { color: var(--success-color); }
+        .status-declined { color: var(--danger-color); }
+        .status-sent { color: var(--info-color); }
+
+
+        /* --- Employer Filter --- */
+        .filter-section {
+            background-color: var(--bg-main);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px; /* Space between elements */
+            flex-wrap: wrap; /* Wrap on small screens */
+        }
+        .filter-section label { font-weight: 600; color: var(--text-primary); }
+
+         /* --- Job Accepted Details View & General Details Sections --- */
+         .details-section {
+             background-color: var(--bg-main);
+             padding: 25px;
+             border-radius: 8px;
+             margin-bottom: 25px;
+             border: 1px solid var(--border-light);
+         }
+          #job-accepted-details-view h4, .details-section h4 { /* Apply consistent H4 style */
+             color: var(--accent-primary);
+             border-bottom: 1px solid var(--border-light);
+             padding-bottom: 8px;
+             margin-bottom: 15px;
+              margin-top: 0; /* Remove default margin-top */
+             display: flex;
+             align-items: center;
+         }
+          #job-accepted-details-view h4 svg, .details-section h4 svg { /* Apply consistent SVG style */
+             width: 20px; height: 20px; margin-right: 10px; fill: var(--accent-primary);
+         }
+         .employer-message {
+             font-style: italic;
+             padding: 15px;
+             background-color: var(--status-accepted-bg);
+             border-left: 4px solid var(--success-color);
+             border-radius: 4px;
+             color: #333;
+         }
+         .map-placeholder-large {
+             height: 300px;
+             background-color: #e9ecef;
+             border: 1px solid var(--border-light);
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             color: var(--text-secondary);
+             font-style: italic;
+             border-radius: 8px;
+             margin-top: 15px;
+             background-image: url('https://via.placeholder.com/600x300/e9ecef/6c757d?text=Map+Preview+(Concept)'); /* Basic placeholder */
+             background-size: cover;
+             background-position: center;
+         }
+
+         /* Log Area Styling */
+         .log-area {
+             margin-top: 40px;
+             padding: 20px;
+             background-color: var(--bg-main);
+             border-radius: 8px;
+             border: 1px solid var(--border-light);
+         }
+         .log-area h2 { margin-top: 0; font-size: 1.4rem; border-bottom-color: var(--border-light); }
+         .log-area ul { list-style: none; padding: 0; margin: 0; }
+         .log-area li {
+             padding: 12px 10px;
+             border-bottom: 1px solid var(--border-light);
+             font-size: 0.95rem;
+             /* Removed flex for more flexible content within li */
+         }
+          .log-area li:last-child { border-bottom: none; }
+          .log-area .log-placeholder { font-style: italic; color: #777; text-align: center; padding: 20px;}
+          .log-status { font-weight: 600; padding: 3px 8px; border-radius: 4px; font-size: 0.85rem; margin-left: 10px; display: inline-block; /* Make it inline block */ }
+          .log-status-pending { background-color: var(--warning-color); color: #333; }
+          .log-status-accepted { background-color: var(--success-color); color: white; }
+          .log-status-declined { background-color: var(--danger-color); color: white; }
+
+          /* Worker History Specific */
+          #worker-job-history-list { margin-top: 15px; padding: 0;} /* Reset log-area margin */
+          #worker-job-history-list li div { margin-bottom: 5px; } /* Spacing within list items */
+
+
+          /* Availability Calendar */
+          #availability-calendar div {
+             min-height: 40px; /* Ensure cells have some height */
+             display: flex; /* Center number */
+             align-items: center;
+             justify-content: center;
+         }
+
+          /* Rating Stars */
+         #star-rating-input span {
+             margin: 0 2px; /* Spacing between stars */
+         }
+
+         /* SVG Icons (simple placeholders) */
+         .icon { width: 1em; height: 1em; vertical-align: -0.125em; fill: currentColor; margin-right: 0.3em;}
+
+
+    </style>
+</head>
+<body>
+
+    <div id="landing-page" class="view active">
+        <div class="container">
+            <h1>ShiftLink</h1>
+            <p>The fastest way for catering businesses to find reliable evening staff, and for staff to find flexible shifts.</p>
+            <div class="options">
+                <button id="show-worker-btn" class="btn btn-primary">Find Evening Work</button>
+                <button id="show-employer-btn" class="btn btn-secondary">Find Evening Staff</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="employer-view" class="view">
+        <div class="container clearfix">
+            <button class="back-button" onclick="navigateTo('landing-page')">
+                 <svg class="icon" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/></svg>
+                 Back
+            </button>
+            <h1>Employer Dashboard</h1>
+
+            <div class="dashboard-nav">
+                <button class="btn btn-info" onclick="navigateTo('employer-completed-jobs-view')">Rate Past Workers</button>
+                <button class="btn btn-info" onclick="navigateTo('employer-chat-log-view')">Chat History</button>
+                </div>
+            <div class="filter-section">
+                <label for="worker-type-filter">Show me workers skilled in:</label>
+                <select id="worker-type-filter">
+                    <option value="Any">Any Skill</option>
+                    <option value="Bartending">Bartending</option>
+                    <option value="Waiting Tables">Waiting Tables</option>
+                    <option value="Kitchen Porter">Kitchen Porter</option>
+                    <option value="Barista">Barista</option>
+                    <option value="Event Setup">Event Setup</option>
+                     <option value="Silver Service">Silver Service</option>
+                     <option value="Cocktails">Cocktails</option>
+                     <option value="POS Systems">POS Systems</option>
+                     <option value="Cleaning">Cleaning</option>
+                     <option value="Customer Service">Customer Service</option>
+                </select>
+                <button class="btn btn-primary" onclick="filterWorkers()">Filter</button>
+            </div>
+
+            <h2>Available Workers Nearby (Simulated 15km)</h2>
+            <div id="worker-list" class="item-list">
+                <p id="no-workers-found" style="display: none; color: var(--text-secondary);">No workers match the selected skill.</p>
+                 </div>
+
+            <div class="log-area">
+                <h2>Sent Job Requests</h2>
+                <ul id="sent-requests-log">
+                    <li class="log-placeholder">Send a request to track its status here.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="worker-view" class="view">
+        <div class="container clearfix">
+            <button class="back-button" onclick="navigateTo('landing-page')">
+                 <svg class="icon" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/></svg>
+                 Back
+            </button>
+            <h1>Worker Dashboard</h1>
+
+             <div class="dashboard-nav">
+                  <button class="btn btn-info" onclick="navigateTo('worker-availability-view')">My Availability</button>
+                  <button class="btn btn-info" onclick="navigateTo('worker-history-view')">My Performance & History</button>
+                  <button class="btn btn-info" onclick="navigateTo('worker-chat-log-view')">Chat History</button>
+             </div>
+             <h2>Available Evening Shifts Nearby (Simulated 15km)</h2>
+            <div id="job-list" class="item-list">
+                 </div>
+
+            <div class="log-area">
+                <h2>My Accepted Shifts</h2>
+                <ul id="accepted-shifts-log">
+                    <li class="log-placeholder">Accept a job to see it here.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+     <div id="job-accepted-details-view" class="view">
+        <div class="container clearfix">
+             <button class="back-button" onclick="navigateTo('worker-view')"> <svg class="icon" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/></svg>
+                 Back to Jobs
+             </button>
+            <h1>Shift Confirmed!</h1>
+
+            <div id="job-confirmation-details">
+                <div class="details-section employer-message-section">
+                    <h4>
+                        <svg class="icon" viewBox="0 0 16 16"><path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2zm13 2.383-4.758 2.855L15 11.114V5.383zm-.034 6.878L9.271 8.82 8 9.583 6.728 8.82l-5.694 3.44A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.739zM1 11.114l4.758-2.876L1 5.383v5.73z"/></svg>
+                        Message from Employer
+                    </h4>
+                    <p id="employer-message-content" class="employer-message"></p>
+                </div>
+
+                <div class="details-section instructions-section">
+                    <h4>
+                        <svg class="icon" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.055.482.172.55.385.073.236.044.487.06.73c.015.242.075.443.14.614.064.172.145.333.23.465a1.165 1.165 0 0 0 .395.408c.19.123.407.187.617.187.21-.002.418-.065.598-.188.18-.123.314-.28.39-.464.076-.184.11-.391.11-.608 0-.218-.034-.43-.11-.626a.987.987 0 0 0-.395-.408c-.19-.123-.407-.187-.617-.187-.156 0-.307.034-.44.107l-.04.025-.017-.09.096-.017 1.96-.313a.5.5 0 0 0 .44-.586l-.05-.25a.5.5 0 0 0-.586-.44l-1.96.312zM8 5.5a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/></svg>
+                         Job Instructions
+                    </h4>
+                    <p id="job-instructions-content"></p>
+                </div>
+
+                 <div class="details-section location-section">
+                    <h4>
+                        <svg class="icon" viewBox="0 0 16 16"><path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/></svg>
+                         Location & Directions
+                    </h4>
+                    <p id="job-location-content"></p>
+                    <div class="map-placeholder-large" title="Concept: Interactive map would show route">
+                        </div>
+                    <button class="btn btn-info" style="margin-top: 15px;" onclick="alert('Concept: This would open your maps app.')">
+                         <svg class="icon" viewBox="0 0 16 16"><path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/></svg>
+                         Open in Maps (Simulated)
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="worker-history-view" class="view">
+        <div class="container clearfix">
+            <button class="back-button" onclick="navigateTo('worker-view')">
+                <svg class="icon" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/></svg>
+                Worker Dashboard
+            </button>
+            <h1>My Performance & Job History</h1>
+
+            <div class="details-section performance-summary">
+                <h4>
+                    <svg class="icon" viewBox="0 0 16 16"><path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/></svg>
+                    Overall Performance
+                </h4>
+                <p>Average Rating: <span id="worker-average-rating" class="pay-rate">Calculating...</span></p>
+                </div>
+
+            <div class="log-area" style="margin-top: 15px; padding: 0;">
+                <h2 style="padding: 20px 20px 10px; margin: 0; border-bottom: 1px solid var(--border-light);">Past Shifts</h2>
+                <ul id="worker-job-history-list" >
+                    <li class="log-placeholder">No job history yet.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="worker-availability-view" class="view">
+         <div class="container clearfix">
+            <button class="back-button" onclick="navigateTo('worker-view')">
+                 <svg class="icon" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/></svg>
+                 Worker Dashboard
+            </button>
+            <h1>Set Availability</h1>
+            <p>Tap dates to mark yourself as available or unavailable. Employers will see this when searching.</p>
+
+            <div class="calendar-controls" style="margin-bottom: 20px; text-align: center;">
+                 <button class="btn btn-secondary" onclick="changeMonth(-1)">&lt; Prev Month</button>
+                 <span id="calendar-month-year" style="margin: 0 20px; font-weight: 600; font-size: 1.2em;">April 2025</span>
+                 <button class="btn btn-secondary" onclick="changeMonth(1)">Next Month &gt;</button>
+            </div>
+
+            <div id="availability-calendar" style="
+                display: grid;
+                grid-template-columns: repeat(7, 1fr);
+                gap: 5px;
+                border: 1px solid var(--border-light);
+                padding: 10px;
+                border-radius: 8px;
+                background-color: var(--bg-main);
+            ">
+                </div>
+             <div style="margin-top: 20px; font-size: 0.9em; text-align: center;">
+                 <span style="display: inline-block; width: 15px; height: 15px; background-color: var(--success-color); border-radius: 3px; margin-right: 5px; vertical-align: middle;"></span> Available
+                 <span style="display: inline-block; width: 15px; height: 15px; background-color: var(--danger-color); border-radius: 3px; margin-left: 15px; margin-right: 5px; vertical-align: middle;"></span> Unavailable
+             </div>
+         </div>
+    </div>
+
+    <div id="worker-chat-log-view" class="view">
+         <div class="container clearfix">
+             <button class="back-button" onclick="navigateTo('worker-view')">
+                 <svg class="icon" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/></svg>
+                 Worker Dashboard
+             </button>
+             <h1>Past Conversations</h1>
+
+              <div class="log-area" style="margin-top: 15px; padding: 0;">
+                  <ul id="worker-chat-list">
+                      <li class="log-placeholder">No conversation history yet.</li>
+                  </ul>
+              </div>
+         </div>
+    </div>
+
+    <div id="employer-rate-worker-view" class="view">
+        <div class="container clearfix">
+            <button class="back-button" onclick="navigateTo('employer-completed-jobs-view')">
+                <svg class="icon" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/></svg>
+                Back to Completed Shifts
+            </button>
+            <h1>Rate Worker Performance</h1>
+
+            <div id="rate-worker-details" class="details-section">
+                <p>Loading worker details...</p>
+            </div>
+
+            <div class="rating-section details-section" style="margin-top: 0;"> <h4>
+                    <svg class="icon" viewBox="0 0 16 16"><path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/></svg>
+                    Performance Rating (1-5 Stars)
+                </h4>
+                <div id="star-rating-input" style="font-size: 2rem; cursor: pointer; color: var(--text-secondary); margin-bottom: 15px;">
+                    <span data-value="1">☆</span><span data-value="2">☆</span><span data-value="3">☆</span><span data-value="4">☆</span><span data-value="5">☆</span>
+                </div>
+                 <input type="hidden" id="rating-value" value="0">
+
+                <h4 style="margin-top: 20px;">
+                    <svg class="icon" viewBox="0 0 16 16"><path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2zm13 2.383-4.758 2.855L15 11.114V5.383zm-.034 6.878L9.271 8.82 8 9.583 6.728 8.82l-5.694 3.44A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.739zM1 11.114l4.758-2.876L1 5.383v5.73z"/></svg>
+                    Comments (Optional)
+                </h4>
+                <textarea id="rating-comments" rows="4" style="width: 95%; padding: 10px; border: 1px solid var(--border-light); border-radius: 4px; font-family: inherit; font-size: 1rem; margin-bottom: 20px;"></textarea>
+
+                <h4 style="margin-top: 20px;">
+                     <svg class="icon" viewBox="0 0 16 16"><path d="M8.5 5.5a.5.5 0 0 0-1 0v3.793l-1.146-1.147a.5.5 0 0 0-.708.708l2 2a.5.5 0 0 0 .708 0l2-2a.5.5 0 0 0-.708-.708L8.5 9.293V5.5z"/><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/></svg>
+                    Attendance
+                 </h4>
+                 <button id="mark-attended-btn" class="btn btn-secondary" onclick="markWorkerAttended()">Mark as Attended</button>
+                 <button id="mark-no-show-btn" class="btn btn-warning" style="margin-left: 10px;" onclick="markWorkerNoShow()">Mark as No-Show</button>
+                 <span id="attendance-status" style="font-weight: 600; margin-left: 15px;"></span>
+
+            </div>
+
+            <div style="text-align: right; margin-top: 30px;">
+                <button id="submit-rating-btn" class="btn btn-primary" onclick="submitWorkerRating()">Submit Rating</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="employer-chat-log-view" class="view">
+         <div class="container clearfix">
+             <button class="back-button" onclick="navigateTo('employer-view')">
+                <svg class="icon" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/></svg>
+                Employer Dashboard
+             </button>
+             <h1>Past Conversations</h1>
+
+             <div class="log-area" style="margin-top: 15px; padding: 0;">
+                 <ul id="employer-chat-list">
+                     <li class="log-placeholder">No conversation history yet.</li>
+                 </ul>
+             </div>
+         </div>
+    </div>
+
+    <div id="employer-completed-jobs-view" class="view">
+         <div class="container clearfix">
+             <button class="back-button" onclick="navigateTo('employer-view')">
+                <svg class="icon" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/></svg>
+                 Employer Dashboard
+             </button>
+             <h1>Completed Shifts / Rate Workers</h1>
+              <p>Review past shifts and provide feedback on worker performance.</p>
+
+             <div class="log-area" style="margin-top: 15px; padding: 0;">
+                 <ul id="employer-completed-jobs-list">
+                     <li class="log-placeholder">No completed jobs to rate yet.</li>
+                 </ul>
+              </div>
+         </div>
+    </div>
+
+    <script>
+    // --- Demo Data ---
+    const demoWorkers = [
+        { id: 'worker-1', name: 'Anna Petrova', skills: ['Bartending', 'Waiting Tables', 'Silver Service'], rating: 4.8, distance: 5, avatar: 'AP' , avatarColor: '8FBC8F'},
+        { id: 'worker-2', name: 'Ben Carter', skills: ['Barista', 'Customer Service'], rating: 4.5, distance: 12, avatar: 'BC', avatarColor: 'A0522D' },
+        { id: 'worker-3', name: 'Chloe Davis', skills: ['Event Setup', 'Waiting Tables', 'POS Systems'], rating: 4.7, distance: 8, avatar: 'CD', avatarColor: '2E8B57' },
+        { id: 'worker-4', name: 'David Miller', skills: ['Kitchen Porter', 'Cleaning'], rating: 4.3, distance: 14, avatar: 'DM', avatarColor: 'BC8F8F' },
+        { id: 'worker-5', name: 'Eva Rostova', skills: ['Bartending', 'Cocktails'], rating: 4.9, distance: 9, avatar: 'ER', avatarColor: '4682B4' },
+    ];
+
+    const demoJobs = [
+        { id: 'job-1', company: 'The Grand Bistro', role: 'Waiter/Waitress', location: '12 Market St, City Centre', time: 'Tonight, 6:00 PM - 11:00 PM (5 hours)', pay: 22, distance: 7, requirements: 'Smart black attire, good communication skills, experience preferred.', instructions: 'Report to the floor manager, Sarah, upon arrival. Familiarize yourself with tonight\'s specials. Tables 1-8 are your section.', employerMsg: 'Thanks for accepting, Anna! We look forward to having you tonight. Please arrive 10 minutes early.' },
+        { id: 'job-2', company: 'Riverside Bar', role: 'Bartender', location: '5 Quay Ave, Waterfront', time: 'Tonight, 7:00 PM - 12:00 AM (5 hours)', pay: 25, distance: 11, requirements: 'Min. 1 year cocktail experience, fast-paced environment.', instructions: 'Check in with Mike at the main bar. You\'ll be responsible for the cocktail station. Inventory list is by the till.', employerMsg: 'Great to have you, Eva! It gets busy around 9 PM. See you soon.' },
+        { id: 'job-3', company: 'Event Staff Co', role: 'Event Staff (General)', location: 'City Conference Hall, West Wing', time: 'Tonight, 5:00 PM - 10:00 PM (5 hours)', pay: 18, distance: 4, requirements: 'Assist with setup/breakdown, runner duties, must be reliable.', instructions: 'Find supervisor Jen (wearing red lanyard) near the main entrance. Initial task is setting up tables in Hall B.', employerMsg: 'Welcome aboard, Chloe! Please wear comfortable shoes. Your help is much appreciated.' },
+    ];
+
+    // --- DOM Element References ---
+    const views = document.querySelectorAll('.view');
+    const showWorkerBtn = document.getElementById('show-worker-btn');
+    const showEmployerBtn = document.getElementById('show-employer-btn');
+    const workerListContainer = document.getElementById('worker-list');
+    const jobListContainer = document.getElementById('job-list');
+    const sentRequestsLog = document.getElementById('sent-requests-log');
+    const acceptedShiftsLog = document.getElementById('accepted-shifts-log');
+    const workerTypeFilter = document.getElementById('worker-type-filter');
+    const noWorkersFoundMsg = document.getElementById('no-workers-found');
+
+    // Job Details View Elements
+    const jobDetailsContainer = document.getElementById('job-confirmation-details');
+    const employerMessageEl = document.getElementById('employer-message-content');
+    const jobInstructionsEl = document.getElementById('job-instructions-content');
+    const jobLocationEl = document.getElementById('job-location-content');
+
+     // --- State ---
+     let requestLogInitialized = false;
+     let acceptedLogInitialized = false;
+     const activeRequests = {}; // Store info about sent requests: { workerId: { logElementId: '...', buttonElement: ... } }
+
+     // --- Utility Function ---
+     function escapeHtml(unsafe) {
+        if (!unsafe) return '';
+        // Basic escaping, consider a library for more robust needs
+        return unsafe
+             .replace(/&/g, "&amp;")
+             .replace(/</g, "&lt;")
+             .replace(/>/g, "&gt;")
+             .replace(/"/g, "&quot;")
+             .replace(/'/g, "&#039;");
+     }
+
+
+     // --- Initialization ---
+     document.addEventListener('DOMContentLoaded', () => {
+         populateWorkerList(demoWorkers); // Initial population
+         populateJobList(demoJobs);
+         navigateTo('landing-page'); // Start at landing page
+     });
+
+     // --- Navigation ---
+     function navigateTo(viewId) {
+         views.forEach(view => {
+             view.classList.remove('active');
+             if (view.id === viewId) {
+                 view.classList.add('active');
+             }
+         });
+         window.scrollTo(0, 0); // Scroll to top on navigation
+     }
+
+     // --- Event Listeners ---
+     showWorkerBtn.addEventListener('click', () => navigateTo('worker-view'));
+     showEmployerBtn.addEventListener('click', () => navigateTo('employer-view'));
+     // Filter button listener added in HTML onclick for simplicity here
+
+     // --- Populate Lists ---
+     function createWorkerCardHTML(worker) {
+         // Placeholder image URL using worker initials and color
+         const avatarUrl = `https://placehold.co/60x60/${worker.avatarColor || 'cccccc'}/FFFFFF?text=${worker.avatar || '?'}`;
+         return `
+             <div class="card profile-card" id="${worker.id}" data-skills="${worker.skills.join(', ')}">
+                 <div class="status-overlay"> <div class="status-icon"></div>
+                     <div class="status-text"></div>
+                 </div>
+                 <div class="card-header">
+                     <img src="${avatarUrl}" alt="${worker.name} Avatar" onerror="this.src='https://placehold.co/60x60/cccccc/FFFFFF?text=?'; this.onerror=null;">
+                     <h3>${worker.name}</h3>
+                 </div>
+                 <div class="card-body">
+                     <p><span class="label">Skills:</span> <span class="detail">${worker.skills.join(', ')}</span></p>
+                     <p><span class="label">Rating:</span> <span class="detail">${worker.rating || 'New'} ★</span></p>
+                     <p><span class="label">Distance:</span> <span class="distance">${worker.distance} km away</span></p>
+                 </div>
+                 <div class="card-footer">
+                     <div class="action-buttons">
+                         <button class="btn btn-primary request-btn" onclick="sendRequest(this, '${worker.id}', '${escapeHtml(worker.name)}')">Send Job Request</button>
+                         <button class="btn btn-secondary connect-btn" style="display: none;" onclick="alert('Concept: This would open a chat/call interface with ${escapeHtml(worker.name)}.')">Connect</button>
+                     </div>
+                 </div>
+             </div>`;
+     }
+
+      function createJobCardHTML(job) {
+         // Store complex data in attributes
+         return `
+             <div class="card job-card" id="${job.id}"
+                 data-instructions="${escapeHtml(job.instructions)}"
+                 data-location-address="${escapeHtml(job.location)}"
+                 data-employer-message="${escapeHtml(job.employerMsg)}"
+                 data-company-name="${escapeHtml(job.company)}"
+                 data-role="${escapeHtml(job.role)}" >
+                 <div class="status-overlay"></div> <div class="card-header">
+                     <h3>${job.role} @ ${job.company}</h3>
+                 </div>
+                 <div class="card-body">
+                     <p><span class="label">Location:</span> <span class="detail">${job.location}</span></p>
+                     <p><span class="label">Time:</span> <span class="detail">${job.time}</span></p>
+                     <p><span class="label">Pay:</span> <span class="pay-rate">$${job.pay} / hour</span></p>
+                     <p><span class="label">Distance:</span> <span class="distance">${job.distance} km away</span></p>
+                     <p><span class="label">Info:</span> <span class="detail">${job.requirements}</span></p>
+                 </div>
+                 <div class="card-footer">
+                     <div class="action-buttons">
+                         <button class="btn btn-accept" onclick="respondToJob(this, '${job.id}', true)">Accept Shift</button>
+                         <button class="btn btn-decline" onclick="respondToJob(this, '${job.id}', false)">Decline Shift</button>
+                     </div>
+                 </div>
+             </div>`;
+     }
+
+      function populateWorkerList(workers) {
+         workerListContainer.innerHTML = workers.map(createWorkerCardHTML).join('');
+         noWorkersFoundMsg.style.display = workers.length === 0 ? 'block' : 'none';
+      }
+
+      function populateJobList(jobs) {
+          jobListContainer.innerHTML = jobs.map(createJobCardHTML).join('');
+      }
+
+      // --- Employer Actions ---
+      function filterWorkers() {
+          const selectedSkill = workerTypeFilter.value;
+          const filteredWorkers = demoWorkers.filter(worker =>
+              selectedSkill === "Any" || worker.skills.includes(selectedSkill)
+          );
+          populateWorkerList(filteredWorkers);
+      }
+
+       function sendRequest(button, workerId, workerName) {
+             button.textContent = 'Request Sent';
+             button.disabled = true;
+
+             const card = document.getElementById(workerId);
+             const statusOverlay = card.querySelector('.status-overlay');
+             statusOverlay.innerHTML = `
+                 <div class="status-icon status-sent">⏳</div>
+                 <div class="status-text status-sent">Request Sent.<br>Waiting for response...</div>`;
+             statusOverlay.classList.add('visible');
+
+
+             // Update Log
+              if (!requestLogInitialized) {
+                  sentRequestsLog.innerHTML = ''; // Clear placeholder
+                  requestLogInitialized = true;
+              }
+              const logItemId = `request-log-${workerId}-${Date.now()}`; // Unique ID
+              const logItem = document.createElement('li');
+              logItem.id = logItemId;
+              logItem.innerHTML = `
+                 <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span>Request to <strong>${workerName}</strong></span>
+                    <span class="log-status log-status-pending">Pending</span>
+                 </div>`;
+              sentRequestsLog.appendChild(logItem);
+
+               // Store request info for potential update
+               activeRequests[workerId] = { logElementId: logItemId, requestButton: button, cardElement: card };
+
+             // --- Simulate Worker Acceptance (Delayed) ---
+             const randomDelay = 5000 + Math.random() * 5000; // 5-10 seconds
+             console.log(`Simulating response for ${workerName} in ${randomDelay / 1000}s`);
+             setTimeout(() => {
+                 // Randomly decide if the worker accepts (for demo variety)
+                 if (Math.random() > 0.3) { // 70% chance of acceptance
+                      handleWorkerResponse(workerId, workerName, true); // Simulate acceptance
+                 } else {
+                      handleWorkerResponse(workerId, workerName, false); // Simulate decline
+                 }
+
+             }, randomDelay);
+       }
+
+       function handleWorkerResponse(workerId, workerName, accepted) {
+            const requestInfo = activeRequests[workerId];
+            if (!requestInfo) {
+                 console.warn("Could not find active request info for workerId:", workerId);
+                 return; // Request no longer active or not found
+            }
+
+            const logItem = document.getElementById(requestInfo.logElementId);
+            const card = requestInfo.cardElement; // Get the card element
+            const statusOverlay = card.querySelector('.status-overlay');
+            const connectButton = card.querySelector('.connect-btn');
+            const requestButton = requestInfo.requestButton;
+
+
+            if (accepted) {
+                 // Update Log
+                 if (logItem) {
+                     logItem.innerHTML = `
+                           <div style="display: flex; justify-content: space-between; align-items: center;">
+                              <span>Request to <strong>${workerName}</strong></span>
+                              <span class="log-status log-status-accepted">Accepted! ✅</span>
+                            </div>`;
+                 }
+                 // Update Card
+                 statusOverlay.innerHTML = `
+                     <div class="status-icon status-accepted">✅</div>
+                     <div class="status-text status-accepted">${workerName} Accepted!</div>`;
+                 statusOverlay.classList.add('visible'); // Ensure it's visible
+                 requestButton.style.display = 'none'; // Hide request button
+                 connectButton.style.display = 'inline-block'; // Show connect button
+
+            } else { // Declined
+                 // Update Log
+                 if (logItem) {
+                     logItem.innerHTML = `
+                          <div style="display: flex; justify-content: space-between; align-items: center;">
+                              <span>Request to <strong>${workerName}</strong></span>
+                              <span class="log-status log-status-declined">Declined ❌</span>
+                          </div>`;
+                 }
+                 // Update Card
+                 statusOverlay.innerHTML = `
+                     <div class="status-icon status-declined">❌</div>
+                     <div class="status-text status-declined">${workerName} Declined.</div>`;
+                 statusOverlay.classList.add('visible');
+                 requestButton.textContent = 'Send Again?'; // Allow resending
+                 requestButton.disabled = false;
+                 requestButton.style.display = 'inline-block'; // Ensure it's visible
+                 connectButton.style.display = 'none'; // Keep connect button hidden
+
+                 // Option: Auto-hide declined overlay after a few seconds?
+                 // setTimeout(() => { statusOverlay.classList.remove('visible'); }, 4000);
+            }
+            delete activeRequests[workerId]; // Clean up the processed request
+       }
+
+      // --- Worker Actions ---
+      function respondToJob(button, jobId, accepted) {
+            const card = button.closest('.job-card');
+            const statusOverlay = card.querySelector('.status-overlay');
+            const buttons = card.querySelectorAll('.action-buttons button');
+
+            buttons.forEach(btn => btn.disabled = true); // Disable both buttons
+
+
+            if (accepted) {
+                statusOverlay.innerHTML = `
+                    <div class="status-icon status-accepted">✅</div>
+                    <div class="status-text status-accepted">Shift Accepted!</div>`;
+
+                 // Populate and navigate to details view
+                 const company = card.dataset.companyName;
+                 const role = card.dataset.role;
+                 const location = card.dataset.locationAddress;
+                 const instructions = card.dataset.instructions;
+                 const employerMsg = card.dataset.employerMessage;
+
+                 employerMessageEl.textContent = employerMsg || 'No specific message provided.';
+                 jobInstructionsEl.textContent = instructions || 'No specific instructions provided.';
+                 jobLocationEl.textContent = location || 'Location details unavailable.';
+
+                 // Add to Accepted Shifts Log
+                 if (!acceptedLogInitialized) {
+                    acceptedShiftsLog.innerHTML = ''; // Clear placeholder
+                    acceptedLogInitialized = true;
+                 }
+                 const logItem = document.createElement('li');
+                 logItem.id = `accepted-log-${jobId}`;
+                 logItem.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span><strong>${role}</strong> @ ${company}</span>
+                        <button class="btn btn-info btn-sm" style="padding: 2px 8px; font-size: 0.8rem;" onclick="showJobDetailsFromLog('${jobId}')">View Details</button>
+                    </div>`;
+                 acceptedShiftsLog.appendChild(logItem);
+
+                 navigateTo('job-accepted-details-view');
+
+
+            } else { // Declined
+                 statusOverlay.innerHTML = `
+                     <div class="status-icon status-declined">❌</div>
+                     <div class="status-text status-declined">Shift Declined.</div>`;
+                // Fade out card or show declined status briefly
+                card.style.opacity = '0.5';
+                card.style.transition = 'opacity 0.5s ease';
+                statusOverlay.classList.add('visible'); // Show overlay
+                // Optionally hide the card after a delay
+                // setTimeout(() => { card.style.display = 'none'; }, 2000);
+            }
+
+            if (!accepted) {
+                statusOverlay.classList.add('visible');
+            }
+      }
+
+     function showJobDetailsFromLog(jobId) {
+         const card = document.getElementById(jobId); // Find original card (might not be visible anymore)
+         if (card) {
+              // Repopulate details view from card data attributes
+               const company = card.dataset.companyName;
+               const role = card.dataset.role;
+               const location = card.dataset.locationAddress;
+               const instructions = card.dataset.instructions;
+               const employerMsg = card.dataset.employerMessage;
+
+               employerMessageEl.textContent = employerMsg || 'No specific message provided.';
+               jobInstructionsEl.textContent = instructions || 'No specific instructions provided.';
+               jobLocationEl.textContent = location || 'Location details unavailable.';
+
+               navigateTo('job-accepted-details-view');
+         } else {
+             alert("Error: Could not retrieve job details. Original card not found.");
+             // In a real app, you'd fetch details from a data source using jobId
+         }
+     }
+
+     // --- NEW Mock Data ---
+    // Dates are YYYY-MM-DD format for easier comparison/sorting
+
+    const mockWorkerJobHistory = [
+        { jobId: 'job-hist-1', company: 'The Grand Bistro', role: 'Waiter/Waitress', date: '2025-04-26', status: 'Completed', rating: 5, payment: 'Paid' },
+        { jobId: 'job-hist-2', company: 'Event Staff Co', role: 'Event Setup', date: '2025-04-19', status: 'Completed', rating: 4, payment: 'Paid' },
+        { jobId: 'job-hist-3', company: 'Corner Cafe', role: 'Barista', date: '2025-04-12', status: 'Did Not Show Up', rating: null, payment: 'N/A' },
+        { jobId: 'job-hist-4', company: 'Riverside Bar', role: 'Bartender', date: '2025-04-05', status: 'Completed', rating: 5, payment: 'Pending' },
+    ];
+
+    // Key: YYYY-MM-DD, Value: true (available) or false (unavailable) - Simple approach
+    let mockWorkerAvailability = {
+        "2025-04-29": true, // Today
+        "2025-05-03": true, // Saturday
+        "2025-05-04": true, // Sunday
+        "2025-05-10": false,
+        "2025-05-11": true,
+    };
+
+    const mockChatLogs = [
+        { logId: 'chat-1', isWorker: true, participantName: 'The Grand Bistro', jobDate: '2025-04-26', lastMessage: 'Thanks again, was a good shift!', unread: false, jobStatus: 'Completed' },
+        { logId: 'chat-2', isWorker: true, participantName: 'Corner Cafe', jobDate: '2025-04-12', lastMessage: 'Confirming arrival time...', unread: false, jobStatus: 'Did Not Show Up'},
+        { logId: 'chat-3', isWorker: false, participantName: 'Anna Petrova', jobDate: '2025-04-26', lastMessage: 'Great, see you then!', unread: false, jobStatus: 'Completed' },
+        { logId: 'chat-4', isWorker: false, participantName: 'David Miller', jobDate: '2025-04-10', lastMessage: 'Request: Kitchen Porter needed', unread: true, jobStatus: 'Request Sent' }, // Example employer log
+    ];
+
+    // Assume some jobs are completed and need rating by employer
+    const mockCompletedJobsForEmployer = [
+         { jobId: 'comp-job-1', workerId: 'worker-1', workerName: 'Anna Petrova', role: 'Waiter/Waitress', date: '2025-04-26', company: 'The Grand Bistro', needsRating: true },
+         { jobId: 'comp-job-2', workerId: 'worker-3', workerName: 'Chloe Davis', role: 'Event Setup', date: '2025-04-19', company: 'Event Staff Co', needsRating: true },
+         { jobId: 'comp-job-3', workerId: 'worker-5', workerName: 'Eva Rostova', role: 'Bartender', date: '2025-04-05', company: 'Riverside Bar', needsRating: false, ratingGiven: 5 }, // Already rated
+         { jobId: 'comp-job-4', workerId: 'worker-4', workerName: 'David Miller', role: 'Kitchen Porter', date: '2025-04-10', company: 'Downtown Diner', needsRating: false, ratingGiven: 'No Show'}, // Marked no show previously
+    ];
+
+
+    // --- NEW DOM References ---
+    const workerHistoryList = document.getElementById('worker-job-history-list');
+    const workerAverageRatingEl = document.getElementById('worker-average-rating');
+    const availabilityCalendar = document.getElementById('availability-calendar');
+    const calendarMonthYearEl = document.getElementById('calendar-month-year');
+    const workerChatList = document.getElementById('worker-chat-list');
+    const employerChatList = document.getElementById('employer-chat-list');
+    const rateWorkerDetailsEl = document.getElementById('rate-worker-details');
+    const starRatingInput = document.getElementById('star-rating-input');
+    const ratingValueInput = document.getElementById('rating-value');
+    const ratingCommentsInput = document.getElementById('rating-comments');
+    const markNoShowBtn = document.getElementById('mark-no-show-btn');
+    const markAttendedBtn = document.getElementById('mark-attended-btn');
+    const attendanceStatusEl = document.getElementById('attendance-status');
+    const submitRatingBtn = document.getElementById('submit-rating-btn');
+    const employerCompletedJobsList = document.getElementById('employer-completed-jobs-list');
+
+    // --- NEW State Variables ---
+    let currentRatingJob = null; // Store which job/worker is being rated
+    let currentCalendarDate = new Date(2025, 3, 29); // Start at April 2025 (Month is 0-indexed)
+
+    // --- NEW Functions ---
+
+    function populateWorkerHistory() {
+        if (!mockWorkerJobHistory || mockWorkerJobHistory.length === 0) {
+            workerHistoryList.innerHTML = '<li class="log-placeholder">No job history yet.</li>';
+            workerAverageRatingEl.textContent = "N/A";
+            return;
+        }
+
+        let totalRating = 0;
+        let ratedJobsCount = 0;
+        let historyHtml = '';
+
+        mockWorkerJobHistory.forEach(job => {
+            let ratingDisplay = 'N/A';
+            if (job.rating !== null && job.rating !== undefined) {
+                ratingDisplay = `${job.rating} ★`;
+                totalRating += job.rating;
+                ratedJobsCount++;
+            } else if (job.status === 'Did Not Show Up') {
+                ratingDisplay = 'No Show';
+            }
+
+            let paymentClass = '';
+            let paymentStyle = 'color: inherit;'; // Default text color
+            if(job.payment === 'Paid') {
+                paymentClass = 'log-status-accepted';
+                paymentStyle = 'color: white;'; // White text for success bg
+            } else if (job.payment === 'Pending') {
+                paymentClass = 'log-status-pending';
+                paymentStyle = 'color: #333;'; // Dark text for warning bg
+            } else { // For N/A
+                 paymentClass = 'log-status-declined';
+                 paymentStyle = 'color: white;'; // White text for danger bg
+            }
+
+
+            historyHtml += `
+                <li style="padding: 15px 10px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                        <div>
+                            <strong>${job.role} @ ${job.company}</strong><br>
+                            <span class="detail">${job.date} - ${job.status}</span>
+                        </div>
+                        <div style="text-align: right;">
+                            <span class="detail">Rating: ${ratingDisplay}</span><br>
+                            <span class="detail">Payment: <span class="log-status ${paymentClass}" style="${paymentStyle} font-weight: normal;">${job.payment}</span></span>
+                            <button class="btn btn-secondary btn-sm" style="padding: 2px 8px; font-size: 0.8rem; margin-left: 10px; vertical-align: baseline;" onclick="alert('Concept: Show chat log for job ${job.jobId}')">Chat</button>
+                        </div>
+                    </div>
+                </li>
+            `;
+        });
+
+        workerHistoryList.innerHTML = historyHtml;
+
+        const averageRating = ratedJobsCount > 0 ? (totalRating / ratedJobsCount).toFixed(1) + ' ★' : 'N/A';
+        workerAverageRatingEl.textContent = averageRating;
+    }
+
+
+    function renderAvailabilityCalendar() {
+        availabilityCalendar.innerHTML = ''; // Clear previous
+        const year = currentCalendarDate.getFullYear();
+        const month = currentCalendarDate.getMonth(); // 0-indexed
+
+        calendarMonthYearEl.textContent = currentCalendarDate.toLocaleString('default', { month: 'long', year: 'numeric' });
+
+        const firstDayOfMonth = new Date(year, month, 1).getDay(); // 0=Sun, 1=Mon...
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        // Add weekday headers
+        const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        weekdays.forEach(day => {
+            const dayEl = document.createElement('div');
+            dayEl.style.textAlign = 'center';
+            dayEl.style.fontWeight = '600';
+            dayEl.style.fontSize = '0.85em';
+            dayEl.style.color = 'var(--text-secondary)';
+            dayEl.style.paddingBottom = '5px'; // Add space below headers
+             dayEl.style.border = 'none'; // Remove border from headers
+            dayEl.textContent = day;
+            availabilityCalendar.appendChild(dayEl);
+        });
+
+
+        // Add blank cells for days before the 1st
+        for (let i = 0; i < firstDayOfMonth; i++) {
+            const blankCell = document.createElement('div');
+            blankCell.style.border = 'none'; // No border for blank cells
+            blankCell.style.cursor = 'default';
+            availabilityCalendar.appendChild(blankCell);
+        }
+
+        // Add day cells
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dayCell = document.createElement('div');
+            dayCell.textContent = day;
+            dayCell.style.padding = '10px 5px';
+            dayCell.style.textAlign = 'center';
+            dayCell.style.border = '1px solid var(--border-light)';
+            dayCell.style.borderRadius = '4px';
+            dayCell.style.cursor = 'pointer';
+            dayCell.style.transition = 'background-color 0.2s ease, color 0.2s ease';
+
+            const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            dayCell.dataset.date = dateString;
+
+            // Style based on availability
+            if (mockWorkerAvailability[dateString] === true) {
+                dayCell.style.backgroundColor = 'var(--success-color)';
+                dayCell.style.color = 'white';
+                dayCell.title = "Available - Click to mark Unavailable";
+            } else if (mockWorkerAvailability[dateString] === false) {
+                 dayCell.style.backgroundColor = 'var(--danger-color)';
+                 dayCell.style.color = 'white';
+                 dayCell.title = "Unavailable - Click to mark Available";
+            } else {
+                dayCell.style.backgroundColor = 'var(--bg-container)';
+                dayCell.style.color = 'var(--text-primary)'; // Default text color
+                dayCell.title = "Click to mark Available";
+            }
+
+             // Highlight today
+             const today = new Date();
+             if (year === today.getFullYear() && month === today.getMonth() && day === today.getDate()) {
+                 dayCell.style.borderColor = 'var(--accent-primary)';
+                 dayCell.style.fontWeight = 'bold';
+                 dayCell.style.boxShadow = '0 0 0 2px var(--accent-primary-darker)'; // Ring effect
+             }
+
+
+            dayCell.addEventListener('click', toggleAvailability);
+            availabilityCalendar.appendChild(dayCell);
+        }
+    }
+
+    function changeMonth(offset) {
+        currentCalendarDate.setMonth(currentCalendarDate.getMonth() + offset);
+        renderAvailabilityCalendar();
+    }
+
+    function toggleAvailability(event) {
+        const dateString = event.target.dataset.date;
+        if (!dateString) return;
+
+        if (mockWorkerAvailability[dateString] === true) {
+            // Mark as unavailable
+             mockWorkerAvailability[dateString] = false;
+             event.target.style.backgroundColor = 'var(--danger-color)';
+             event.target.style.color = 'white';
+             event.target.title = "Unavailable - Click to mark Available";
+        } else {
+             // Mark as available (or toggle from unavailable/unset)
+             mockWorkerAvailability[dateString] = true;
+             event.target.style.backgroundColor = 'var(--success-color)';
+             event.target.style.color = 'white';
+             event.target.title = "Available - Click to mark Unavailable";
+        }
+        console.log("Updated Availability:", mockWorkerAvailability); // For debugging
+         // In a real app, you'd save this change to the backend here.
+    }
+
+
+    function populateChatLogs(listElement, isWorkerLog) {
+         const logs = mockChatLogs.filter(log => log.isWorker === isWorkerLog);
+         if (!logs || logs.length === 0) {
+             listElement.innerHTML = '<li class="log-placeholder">No conversation history yet.</li>';
+             return;
+         }
+
+         let chatHtml = '';
+         logs.forEach(log => {
+             chatHtml += `
+                 <li style="cursor: pointer; padding: 15px 10px; border-bottom: 1px solid var(--border-light);" onclick="alert('Concept: Open chat thread for ${log.participantName} - Job on ${log.jobDate}')">
+                     <div style="display: flex; justify-content: space-between; align-items: center;">
+                          <div>
+                             <strong>${log.participantName}</strong> (${log.jobStatus})<br>
+                             <span class="detail">Job Date: ${log.jobDate}</span><br>
+                              <span style="color: ${log.unread ? 'var(--accent-primary)' : 'var(--text-secondary)'}; font-style: ${log.unread ? 'normal' : 'italic'}; font-weight: ${log.unread ? '600' : 'normal'};">
+                                 ${log.unread ? 'New: ' : ''}${escapeHtml(log.lastMessage)}
+                              </span>
+                         </div>
+                          <span style="font-size: 2rem; color: var(--text-secondary);">&rsaquo;</span>
+                     </div>
+                 </li>
+             `;
+         });
+          chatHtml += '<li style="border-bottom: none;"></li>'; // Avoid last border
+         listElement.innerHTML = chatHtml;
+    }
+
+    function showRateWorkerView(jobId, workerId, workerName, role, date) {
+         currentRatingJob = { jobId, workerId }; // Store context
+
+         rateWorkerDetailsEl.innerHTML = `
+             <p><span class="label">Worker:</span> <span class="detail">${unescapeHtml(workerName)}</span></p> <p><span class="label">Shift:</span> <span class="detail">${unescapeHtml(role)} on ${date}</span></p>
+         `;
+
+         // Reset UI elements
+         resetRatingUI();
+
+         navigateTo('employer-rate-worker-view');
+    }
+
+    function setupStarRating() {
+        const stars = starRatingInput.querySelectorAll('span');
+        stars.forEach(star => {
+            star.addEventListener('mouseover', handleStarHover);
+            star.addEventListener('mouseout', handleStarMouseOut);
+            star.addEventListener('click', handleStarClick);
+        });
+    }
+
+    function handleStarHover(event) {
+        const hoverValue = parseInt(event.target.dataset.value);
+        const stars = starRatingInput.querySelectorAll('span');
+        stars.forEach(star => {
+            star.textContent = parseInt(star.dataset.value) <= hoverValue ? '★' : '☆';
+            star.style.color = parseInt(star.dataset.value) <= hoverValue ? 'var(--warning-color)' : 'var(--text-secondary)';
+        });
+    }
+
+    function handleStarMouseOut() {
+         const currentValue = parseInt(ratingValueInput.value);
+         const stars = starRatingInput.querySelectorAll('span');
+         stars.forEach(star => {
+             star.textContent = parseInt(star.dataset.value) <= currentValue ? '★' : '☆';
+             star.style.color = parseInt(star.dataset.value) <= currentValue ? 'var(--warning-color)' : 'var(--text-secondary)';
+         });
+    }
+
+    function handleStarClick(event) {
+        const clickedValue = parseInt(event.target.dataset.value);
+        ratingValueInput.value = clickedValue;
+        handleStarMouseOut(); // Update visual state permanently
+        // If user clicks stars, assume they attended
+        markWorkerAttended(true); // Pass silent=true to avoid redundant text update if already attended
+    }
+
+    function markWorkerNoShow() {
+        attendanceStatusEl.textContent = 'Marked as NO-SHOW';
+        attendanceStatusEl.style.color = 'var(--danger-color)';
+        markNoShowBtn.classList.add('btn-danger'); // Use specific danger class
+        markNoShowBtn.classList.remove('btn-warning');
+        markAttendedBtn.classList.remove('btn-success');
+        markAttendedBtn.classList.add('btn-secondary');
+         // Disable rating stars if marked as no-show
+         ratingValueInput.value = 0;
+         handleStarMouseOut();
+         starRatingInput.style.opacity = '0.5';
+         starRatingInput.style.pointerEvents = 'none';
+    }
+
+    function markWorkerAttended(silent = false) {
+         if (!silent) {
+             attendanceStatusEl.textContent = 'Marked as ATTENDED';
+             attendanceStatusEl.style.color = 'var(--success-color)';
+         }
+         markAttendedBtn.classList.add('btn-success');
+         markAttendedBtn.classList.remove('btn-secondary');
+         markNoShowBtn.classList.remove('btn-danger');
+         markNoShowBtn.classList.add('btn-warning'); // Reset no-show button style
+         // Re-enable rating stars if they were disabled
+         starRatingInput.style.opacity = '1';
+         starRatingInput.style.pointerEvents = 'auto';
+    }
+
+     function resetRatingUI() {
+        ratingValueInput.value = 0;
+        ratingCommentsInput.value = '';
+        attendanceStatusEl.textContent = ''; // Clear status text
+        markAttendedBtn.classList.remove('btn-success');
+        markAttendedBtn.classList.add('btn-secondary');
+        markNoShowBtn.classList.remove('btn-danger');
+        markNoShowBtn.classList.add('btn-warning');
+        handleStarMouseOut(); // Reset stars visual
+        starRatingInput.style.opacity = '1';
+        starRatingInput.style.pointerEvents = 'auto';
+    }
+
+    function submitWorkerRating() {
+         if (!currentRatingJob) {
+             alert("Error: No job context for rating.");
+             return;
+         }
+
+         const rating = parseInt(ratingValueInput.value);
+         const comments = ratingCommentsInput.value;
+         const isNoShow = attendanceStatusEl.textContent === 'Marked as NO-SHOW';
+         const isAttended = attendanceStatusEl.textContent === 'Marked as ATTENDED';
+
+         // Validation: Must mark attended or no-show before submitting
+          if (!isNoShow && !isAttended) {
+             alert("Please mark the worker as Attended or No-Show before submitting.");
+             return;
+         }
+
+         if (isAttended && rating === 0) {
+             alert("Please select a star rating (1-5) for an attended worker.");
+             return;
+         }
+         if (isNoShow && rating > 0) {
+            // This shouldn't happen if UI prevents it, but double-check
+            alert("Cannot submit a star rating if worker is marked as No-Show.");
+            return;
+         }
+
+
+         // --- Update Mock Data (Simulation) ---
+         const finalRating = isNoShow ? null : rating;
+         const finalStatus = isNoShow ? 'No Show' : 'Completed & Rated';
+         const finalPaymentStatus = isNoShow ? 'N/A' : 'Pending'; // Or maybe 'Ready for Payroll'
+
+         console.log("Submitting Rating:", {
+             jobId: currentRatingJob.jobId,
+             workerId: currentRatingJob.workerId,
+             rating: finalRating,
+             comments: comments,
+             status: finalStatus,
+             payment: finalPaymentStatus
+         });
+
+         // Find the worker in demoWorkers and update their average rating (conceptual)
+         const workerIndex = demoWorkers.findIndex(w => w.id === currentRatingJob.workerId);
+         if (workerIndex !== -1) {
+             // In reality, average calculation is more complex. This is just illustrative.
+             // You'd fetch all ratings for the worker and recalculate.
+             // For now, we'll just log it. A real app needs a backend.
+              console.log(`(Concept) Update average rating for ${demoWorkers[workerIndex].name}`);
+              // Simple update for demo: If rated, adjust the demoWorker rating slightly
+              if (finalRating !== null && demoWorkers[workerIndex].rating) {
+                 // Very basic adjustment, not a real average
+                 demoWorkers[workerIndex].rating = ((demoWorkers[workerIndex].rating * 3) + finalRating) / 4;
+                 demoWorkers[workerIndex].rating = parseFloat(demoWorkers[workerIndex].rating.toFixed(1));
+              } else if (finalRating !== null && !demoWorkers[workerIndex].rating) {
+                  demoWorkers[workerIndex].rating = finalRating; // First rating
+              }
+         }
+
+        // Find the job in the employer's completed list and mark as rated/no-show
+        const completedJobIndex = mockCompletedJobsForEmployer.findIndex(j => j.jobId === currentRatingJob.jobId);
+        if(completedJobIndex !== -1) {
+            mockCompletedJobsForEmployer[completedJobIndex].needsRating = false;
+            mockCompletedJobsForEmployer[completedJobIndex].ratingGiven = isNoShow ? 'No Show' : finalRating;
+            mockCompletedJobsForEmployer[completedJobIndex].status = finalStatus; // Update status
+        }
+
+        // Update worker's history too (conceptual)
+         const workerHistoryIndex = mockWorkerJobHistory.findIndex(j => j.jobId === `job-hist-${currentRatingJob.jobId.split('-')[2]}`); // Guessing mapping
+         if (workerHistoryIndex !== -1) {
+             mockWorkerJobHistory[workerHistoryIndex].status = isNoShow ? 'Did Not Show Up' : 'Completed';
+             mockWorkerJobHistory[workerHistoryIndex].rating = finalRating;
+             mockWorkerJobHistory[workerHistoryIndex].payment = finalPaymentStatus;
+             console.log("(Concept) Updated worker's job history entry.");
+         }
+
+
+         alert("Rating Submitted! (Check console for details. Worker ratings/history may update conceptually.)");
+         currentRatingJob = null;
+         populateEmployerCompletedJobs(); // Refresh the list
+         navigateTo('employer-completed-jobs-view'); // Go back to the list
+    }
+
+    function populateEmployerCompletedJobs() {
+         if (!mockCompletedJobsForEmployer || mockCompletedJobsForEmployer.length === 0) {
+             employerCompletedJobsList.innerHTML = '<li class="log-placeholder">No completed jobs to display yet.</li>';
+             return;
+         }
+
+         let completedHtml = '';
+         // Sort by needsRating first, then by date descending? Optional.
+         mockCompletedJobsForEmployer.sort((a, b) => {
+             if(a.needsRating && !b.needsRating) return -1;
+             if(!a.needsRating && b.needsRating) return 1;
+             return new Date(b.date) - new Date(a.date); // Most recent first
+         });
+
+         mockCompletedJobsForEmployer.forEach(job => {
+             let actionButton = '';
+             let statusText = '';
+              if (job.needsRating) {
+                 actionButton = `<button class="btn btn-primary btn-sm" onclick="showRateWorkerView('${job.jobId}', '${job.workerId}', '${escapeHtml(job.workerName)}', '${escapeHtml(job.role)}', '${job.date}')">Rate Now</button>`;
+                 statusText = '<span style="color: var(--warning-color); font-weight: 600;">Needs Rating</span>';
+              } else {
+                  actionButton = `<button class="btn btn-secondary btn-sm" disabled>Rated</button>`;
+                   let ratingDisplay = job.ratingGiven === 'No Show' ? 'No Show' : `${job.ratingGiven} ★`;
+                  statusText = `<span style="color: ${job.ratingGiven === 'No Show' ? 'var(--danger-color)' : 'var(--success-color)'}; font-weight: 600;">Rated: ${ratingDisplay}</span>`;
+              }
+
+             completedHtml += `
+                 <li style="padding: 15px 10px; border-bottom: 1px solid var(--border-light);">
+                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                          <div>
+                             <strong>${job.role} - ${job.workerName}</strong><br>
+                             <span class="detail">${job.company} - ${job.date}</span>
+                         </div>
+                          <div style="text-align: right;">
+                             ${statusText}<br style="margin-bottom: 5px;"> ${actionButton}
+                          </div>
+                     </div>
+                 </li>
+             `;
+         });
+         completedHtml += '<li style="border-bottom: none;"></li>'; // Avoid last border
+         employerCompletedJobsList.innerHTML = completedHtml;
+    }
+
+    // --- Modify/Extend Existing Functions ---
+
+     // Store original function reference
+     const originalNavigateToRef = navigateTo;
+
+     // Define the new navigateTo function
+     navigateTo = function(viewId) {
+         originalNavigateToRef(viewId); // Call original navigation logic
+
+         // Populate views when they are shown
+         switch (viewId) {
+             case 'worker-history-view':
+                 populateWorkerHistory();
+                 break;
+             case 'worker-availability-view':
+                 renderAvailabilityCalendar(); // Render calendar when view is shown
+                 break;
+             case 'worker-chat-log-view':
+                 populateChatLogs(workerChatList, true);
+                 break;
+              case 'employer-chat-log-view':
+                 populateChatLogs(employerChatList, false);
+                 break;
+             case 'employer-rate-worker-view':
+                 // Rating view is populated by showRateWorkerView, but ensure stars are set up
+                 setupStarRating();
+                 break;
+             case 'employer-completed-jobs-view':
+                  populateEmployerCompletedJobs();
+                  break;
+              case 'worker-view':
+                  // Re-populate job list in case jobs were accepted/declined
+                  populateJobList(demoJobs);
+                  // Re-populate accepted shifts log
+                   // Find currently accepted jobs (simple filter based on log)
+                   const acceptedJobIds = Array.from(acceptedShiftsLog.querySelectorAll('li[id^="accepted-log-"]')).map(li => li.id.replace('accepted-log-', ''));
+                    if (acceptedJobIds.length > 0) acceptedLogInitialized = true;
+                     else acceptedLogInitialized = false; // Reset if empty
+                    if(!acceptedLogInitialized) {
+                         acceptedShiftsLog.innerHTML = '<li class="log-placeholder">Accept a job to see it here.</li>';
+                    } else {
+                         // Repopulate based on IDs (or could store accepted jobs array)
+                          acceptedShiftsLog.innerHTML = ''; // Clear first
+                          acceptedJobIds.forEach(jobId => {
+                               const jobCard = document.getElementById(jobId); // Find original card data source
+                                if (jobCard) {
+                                     const role = jobCard.dataset.role;
+                                     const company = jobCard.dataset.companyName;
+                                     const logItem = document.createElement('li');
+                                     logItem.id = `accepted-log-${jobId}`;
+                                     logItem.innerHTML = `
+                                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                                            <span><strong>${role}</strong> @ ${company}</span>
+                                            <button class="btn btn-info btn-sm" style="padding: 2px 8px; font-size: 0.8rem;" onclick="showJobDetailsFromLog('${jobId}')">View Details</button>
+                                        </div>`;
+                                     acceptedShiftsLog.appendChild(logItem);
+                                }
+                          });
+
+                    }
+                 break;
+              case 'employer-view':
+                 // Re-populate worker list (ratings might have changed conceptually)
+                 populateWorkerList(demoWorkers);
+                  // Re-populate sent requests log? (Less critical unless cancelling requests is added)
+                 break;
+         }
+     }
+
+     // --- Add unescapeHtml if needed ---
+     function unescapeHtml(safe) {
+         if (!safe) return '';
+         return safe
+             .replace(/&amp;/g, "&")
+             .replace(/&lt;/g, "<")
+             .replace(/&gt;/g, ">")
+             .replace(/&quot;/g, "\"")
+             .replace(/&#039;/g, "'");
+     }
+
+    </script>
+
+</body>
+</html>
